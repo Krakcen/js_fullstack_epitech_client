@@ -1,0 +1,16 @@
+/*******************************
+         Site Overrides
+*******************************/
+
+/* Tikaway */
+i.tikaway.icon {
+    color: @tikaway !important;
+}
+i.inverted.tikaway.icon {
+    color: @lightTikaway !important;
+}
+i.inverted.bordered.tikaway.icon,
+i.inverted.circular.tikaway.icon {
+    background-color: @tikaway !important;
+    color: @white !important;
+}
