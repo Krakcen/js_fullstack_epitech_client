@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 
-export default class Landing extends Component {
+export default class NotFound extends Component {
   componentDidMount = () => {};
 
   render() {
-    return <div>Landing</div>;
+    return <div>404</div>;
   }
 }
