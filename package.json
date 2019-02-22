@@ -55,7 +55,7 @@
     "start-js": "react-scripts start",
     "build-js": "react-scripts build",
     "start": "npm-run-all -p watch-semantic start-js",
-    "build": "npm-run-all build-semantic build-js",
+    "build": "npm-run-all -p build-semantic build-js",
     "test": "react-scripts test",
     "flow": "flow",
     "lint": "eslint src/react/",
