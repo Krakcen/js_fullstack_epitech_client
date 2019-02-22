@@ -3,22 +3,18 @@
 *******************************/
 
 /*---  Colors  ---*/
-@tikaway              : #173a52;
 @orange               : #EB6634;
 @blue                 : #1f384e;
 
 
 /*---  Light Colors  ---*/
-@lightTikaway         : #275c80;
 
 
 /*-------------------
     Brand Colors
 --------------------*/
-@primaryColor        : @tikaway;
 
 
 /*-------------------
        Links
 --------------------*/
-@linkColor           : @tikaway;
