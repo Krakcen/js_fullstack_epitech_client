@@ -7,7 +7,7 @@ import {
 import { withTranslation } from 'react-i18next';
 
 import {
-  Landing, Rooms, LiveEdit, NotFound,
+  Landing, Rooms, Story, NotFound,
 } from './react';
 
 let RouteContainer = ({ location }) => (
@@ -15,7 +15,7 @@ let RouteContainer = ({ location }) => (
     <Switch location={location}>
       <Route exact path="/" component={Landing} />
       <Route exact path="/rooms" component={Rooms} />
-      <Route exact path="/live-edit" component={LiveEdit} />
+      <Route exact path="/awesome-story" component={Story} />
       <Route component={NotFound} />
     </Switch>
   </section>

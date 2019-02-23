@@ -18,6 +18,7 @@ import {
   scrollSpy,
   scroller,
 } from 'react-scroll';
+import { withTranslation } from 'react-i18next';
 import { HomepageHeading } from './landing';
 
 const getWidth = () => {
@@ -42,7 +43,7 @@ class DesktopContainer extends Component {
   };
 
   render() {
-    const { children } = this.props;
+    const { children, t } = this.props;
     const { fixed } = this.state;
 
     return (
@@ -66,14 +67,14 @@ class DesktopContainer extends Component {
               size="large"
             >
               <Container>
-                <Menu.Item as="a">My Stories</Menu.Item>
-                <Menu.Item as="a">My Profile</Menu.Item>
+                <Menu.Item as="a">{t('landing.menuStories')}</Menu.Item>
+                <Menu.Item as="a">{t('landing.menuProfile')}</Menu.Item>
                 <Menu.Item position="right">
                   <Button as="a" inverted={!fixed}>
-                    Log in
+                    {t('landing.menuLogin')}
                   </Button>
                   <Button as="a" inverted={!fixed} primary={fixed} style={{ marginLeft: '0.5em' }}>
-                    Sign Up
+                    {t('landing.menuRegister')}
                   </Button>
                 </Menu.Item>
               </Container>
@@ -88,4 +89,4 @@ class DesktopContainer extends Component {
   }
 }
 
-export default DesktopContainer;
+export default withTranslation()(DesktopContainer);

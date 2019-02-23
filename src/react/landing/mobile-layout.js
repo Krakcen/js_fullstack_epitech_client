@@ -19,6 +19,7 @@ import {
   scroller,
 } from 'react-scroll';
 
+import { withTranslation } from 'react-i18next';
 import { HomepageHeading } from './landing';
 
 const getWidth = () => {
@@ -43,7 +44,7 @@ class MobileContainer extends Component {
   };
 
   render() {
-    const { children } = this.props;
+    const { children, t } = this.props;
     const { sidebarOpened } = this.state;
 
     return (
@@ -60,8 +61,8 @@ class MobileContainer extends Component {
           vertical
           visible={sidebarOpened}
         >
-          <Menu.Item as="a">Mes Histoires</Menu.Item>
-          <Menu.Item as="a">Mon Profil</Menu.Item>
+          <Menu.Item as="a">{t('landing.menuStories')}</Menu.Item>
+          <Menu.Item as="a">{t('landing.menuProfile')}</Menu.Item>
         </Sidebar>
 
         <Sidebar.Pusher dimmed={sidebarOpened}>
@@ -78,10 +79,10 @@ class MobileContainer extends Component {
                 </Menu.Item>
                 <Menu.Item position="right">
                   <Button as="a" inverted>
-                    Log in
+                    {t('landing.menuLogin')}
                   </Button>
                   <Button as="a" inverted style={{ marginLeft: '0.5em' }}>
-                    Sign Up
+                    {t('landing.menuRegister')}
                   </Button>
                 </Menu.Item>
               </Menu>
@@ -96,4 +97,4 @@ class MobileContainer extends Component {
   }
 }
 
-export default MobileContainer;
+export default withTranslation()(MobileContainer);

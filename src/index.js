@@ -1,30 +1,22 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-// import { applyMiddleware, createStore, compose } from 'redux';
-// import { Provider } from 'react-redux';
-// import { connect } from 'react-redux';
-// import promise from 'redux-promise-middleware';
-// import { composeWithDevTools } from 'redux-devtools-extension';
-// import thunk from 'redux-thunk';
-// import { I18nextProvider } from 'react-i18next';
+import { Provider, connect } from 'react-redux';
+import { I18nextProvider } from 'react-i18next';
+import store from './redux/configureStore';
+import { setUser as setUserAction } from './redux/actions';
 import Routes from './routes';
+import i18n from './translation/i18n';
 
 // import i18n from "./translation/i18n";
-// import rootReducer from "./redux/reducers";
-// import { setUser } from "./redux/actions";
 // import { logInUserDefault } from "./utils/tkwlive-request";
 
 import './semantic/dist/semantic.min.css';
-
-// const middleware = composeWithDevTools(applyMiddleware(promise(), thunk));
-// let store = createStore(/*reducer*/ rootReducer, middleware);
 
 class App extends Component {
   state = {};
 
   componentDidMount = () => {
     // const { user, setUser } = this.props;
-
     //    logInUserDefault()
     //       .then(r => {
     //          if (r === "Not Logged In") {
@@ -52,4 +44,20 @@ class App extends Component {
   }
 }
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const mapStateToProps = state => ({
+  user: state.user,
+});
+
+const AppConnect = connect(
+  mapStateToProps,
+  { setUser: setUserAction },
+)(App);
+
+ReactDOM.render(
+  <Provider store={store}>
+    <I18nextProvider i18n={i18n}>
+      <AppConnect />
+    </I18nextProvider>
+  </Provider>,
+  document.getElementById('root'),
+);
