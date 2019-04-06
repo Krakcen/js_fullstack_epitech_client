@@ -1,25 +1,14 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import {
-  Button,
-  Container,
-  Header,
-  Icon,
-  Menu,
-  Responsive,
-  Segment,
-  Visibility,
+  Container, Menu, Responsive, Segment, Visibility,
 } from 'semantic-ui-react';
-import {
-  Link,
-  DirectLink,
-  Element,
-  Events,
-  animateScroll as scroll,
-  scrollSpy,
-  scroller,
-} from 'react-scroll';
+import { Link } from 'react-router-dom';
+import { scroller } from 'react-scroll';
 import { withTranslation } from 'react-i18next';
 import { HomepageHeading } from './landing';
+import { AuthButtons } from './components';
+import { Constants } from '../global';
 
 const getWidth = () => {
   const isSSR = typeof window === 'undefined';
@@ -56,7 +45,11 @@ class DesktopContainer extends Component {
           <Segment
             inverted
             textAlign="center"
-            style={{ minHeight: 700, padding: '1em 0em' }}
+            style={{
+              minHeight: 700,
+              padding: '1em 0em',
+              backgroundColor: Constants.secondaryColor,
+            }}
             vertical
           >
             <Menu
@@ -64,18 +57,18 @@ class DesktopContainer extends Component {
               inverted={!fixed}
               pointing={!fixed}
               secondary={!fixed}
-              size="large"
+              size="massive"
+              style={{ border: 'none' }}
             >
               <Container>
-                <Menu.Item as="a">{t('landing.menuStories')}</Menu.Item>
-                <Menu.Item as="a">{t('landing.menuProfile')}</Menu.Item>
+                <Link to="/stories">
+                  <Menu.Item>{t('landing.menuStories')}</Menu.Item>
+                </Link>
+                {/* <Link to="/profile">
+                  <Menu.Item>{t('landing.menuProfile')}</Menu.Item>
+                </Link> */}
                 <Menu.Item position="right">
-                  <Button as="a" inverted={!fixed}>
-                    {t('landing.menuLogin')}
-                  </Button>
-                  <Button as="a" inverted={!fixed} primary={fixed} style={{ marginLeft: '0.5em' }}>
-                    {t('landing.menuRegister')}
-                  </Button>
+                  <AuthButtons fixed={fixed || false} t={t} />
                 </Menu.Item>
               </Container>
             </Menu>
@@ -88,5 +81,9 @@ class DesktopContainer extends Component {
     );
   }
 }
+DesktopContainer.propTypes = {
+  children: PropTypes.node.isRequired,
+  t: PropTypes.func.isRequired,
+};
 
 export default withTranslation()(DesktopContainer);

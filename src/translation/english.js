@@ -1,6 +1,6 @@
 export default {
   landing: {
-    menuStories: 'My Stories',
+    menuStories: 'Stories',
     menuProfile: 'My Profile',
     menuLogin: 'Log in',
     menuRegister: 'Sign up',

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import {
   Button,
   Container,
@@ -19,6 +20,7 @@ import faker from 'faker';
 import { useTranslation, withTranslation } from 'react-i18next';
 
 import { setLang as setLangAction } from '../../redux/actions';
+import { Constants } from '../global';
 import DesktopContainer from './desktop-layout';
 import MobileContainer from './mobile-layout';
 
@@ -26,7 +28,7 @@ const fakeData = [];
 
 const cookies = new Cookies();
 
-for (let i = 0; i < 4; i += 1) {
+for (let i = 0; i < 3; i += 1) {
   fakeData.push({
     ownerName: faker.name.findName(),
     title: faker.lorem.words(7),
@@ -65,13 +67,20 @@ export const HomepageHeading = ({ mobile, handleArrowDownClick }) => {
       />
       <Button
         onClick={handleArrowDownClick}
-        style={{ marginTop: '100px' }}
+        style={{ marginTop: '100px', backgroundColor: Constants.primaryColor, color: 'white' }}
         size="huge"
         circular
         icon="arrow down"
       />
     </Container>
   );
+};
+HomepageHeading.defaultProps = {
+  mobile: false,
+};
+HomepageHeading.propTypes = {
+  mobile: PropTypes.bool,
+  handleArrowDownClick: PropTypes.func.isRequired,
 };
 
 const ResponsiveContainer = ({ children }) => (
@@ -80,6 +89,9 @@ const ResponsiveContainer = ({ children }) => (
     <MobileContainer>{children}</MobileContainer>
   </div>
 );
+ResponsiveContainer.propTypes = {
+  children: PropTypes.node.isRequired,
+};
 
 class Landing extends Component {
   componentDidMount = () => {};
@@ -141,7 +153,7 @@ class Landing extends Component {
                   {t('landing.sectionTwoHeader')}
                 </Header>
                 <Card.Group textAlign="center" itemsPerRow={3}>
-                  {fakeData.map((el, index) => (
+                  {fakeData.map(el => (
                     <Card link onClick={this.goToStory} key={el.synopsis}>
                       <Card.Content>
                         <Card.Header>
@@ -163,9 +175,8 @@ class Landing extends Component {
                         </div>
                       </Card.Content>
                       <Card.Content extra>
-                        <Progress percent={el.progression} size="small" indicating>
-                          {"Progression de l'histoire"}
-                        </Progress>
+                        <Header style={{ marginTop: '10px' }} textAlign="center" as="h5">Progression de l'histoire</Header>
+                        <Progress percent={el.progression} size="small" />
                       </Card.Content>
                     </Card>
                   ))}
@@ -200,6 +211,12 @@ class Landing extends Component {
     );
   };
 }
+Landing.propTypes = {
+  t: PropTypes.func.isRequired,
+  storyFactoryLang: PropTypes.string.isRequired,
+  setLang: PropTypes.func.isRequired,
+  history: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
+};
 
 const mapStateToProps = state => ({
   storyFactoryLang: state.lang,

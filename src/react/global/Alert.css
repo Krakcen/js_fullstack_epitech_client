@@ -1,0 +1,8 @@
+.tkw-alert-container {
+  min-height: 40px;
+  font-size: 1.1rem;
+}
+
+.swal2-popup.swal2-toast {
+  box-shadow: 0 0 0.625em #515151;
+}

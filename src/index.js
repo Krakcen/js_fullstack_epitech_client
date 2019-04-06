@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { Provider, connect } from 'react-redux';
 import { I18nextProvider } from 'react-i18next';
@@ -7,42 +7,35 @@ import { setUser as setUserAction } from './redux/actions';
 import Routes from './routes';
 import i18n from './translation/i18n';
 
-// import i18n from "./translation/i18n";
-// import { logInUserDefault } from "./utils/tkwlive-request";
-
+import { StoryLogin, StateProvider, useStateValue } from './react/global';
 import './semantic/dist/semantic.min.css';
 
-class App extends Component {
-  state = {};
+const App = () => {
+  const [{ user }, dispatch] = useStateValue();
 
-  componentDidMount = () => {
-    // const { user, setUser } = this.props;
-    //    logInUserDefault()
-    //       .then(r => {
-    //          if (r === "Not Logged In") {
-    //             //console.log("NO ", r);
-    //             setUser({ ...user, loggedIn: false });
-    //          } else {
-    //             //console.log("YES ", r);
-    //             setUser({ ...user, loggedIn: true, ...r });
-    //          }
-    //       })
-    //       .catch(e => {
-    //          console.log("oops in init login", e);
-    //          setUser({ ...user, loggedIn: false });
-    //       });
+  const performFirstLogin = async () => {
+    try {
+      // dispatch({ type: 'SET_USER', payload: { loggedIn: true } });
+      const userLog = await StoryLogin();
+
+      if (localStorage.getItem('storyfactory-jwt') && !user.loggedIn) {
+        dispatch({
+          type: 'SET_USER',
+          payload: { loggedIn: true, ...userLog },
+        });
+      }
+      return;
+    } catch (error) {
+      console.log(error.message);
+    }
   };
+  useEffect(() => {
+    performFirstLogin();
+    return () => {};
+  }, []);
 
-  render() {
-    // const { user } = this.props;
-
-    return (
-      //  <I18nextProvider i18n={i18n}>{user.loggedIn != null ?
-      // <Routes user={user} /> : <p>Loading...</p>}</I18nextProvider>
-      <Routes />
-    );
-  }
-}
+  return <Routes />;
+};
 
 const mapStateToProps = state => ({
   user: state.user,
@@ -56,7 +49,9 @@ const AppConnect = connect(
 ReactDOM.render(
   <Provider store={store}>
     <I18nextProvider i18n={i18n}>
-      <AppConnect />
+      <StateProvider>
+        <AppConnect />
+      </StateProvider>
     </I18nextProvider>
   </Provider>,
   document.getElementById('root'),

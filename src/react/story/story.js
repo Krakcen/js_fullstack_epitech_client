@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Button } from 'semantic-ui-react';
 import './story.css';
 
-import { useInterval } from '../../utils/react-hooks';
+// import { useInterval } from '../../utils/react-hooks';
 
-const Story = ({ user }) => {
+const Story = () => {
   const [count, setCount] = useState(42);
 
   // useInterval(() => {
@@ -14,8 +14,8 @@ const Story = ({ user }) => {
   return (
     <div style={{ paddingTop: '50px' }} className="container-fluid blue-bg">
       <div className="container">
-        <h2 className="pb-3 pt-2">The Hobbit: An Unexpected Journey</h2>
-
+        <h2 className="pb-3 pt-2">{`The Hobbit: An Unexpected Journey ${count}`}</h2>
+        <Button onClick={() => setCount(count + 1)}>inc</Button>
         <div className="row align-items-center how-it-works">
           <div className="col-2 text-center bottom">
             <div className="story-circle">1</div>

@@ -3,8 +3,8 @@
 *******************************/
 
 /*---  Colors  ---*/
-@orange               : #EB6634;
-@blue                 : #1f384e;
+@orange               : coral;
+@blue                 : cornflowerblue;
 
 
 /*---  Light Colors  ---*/

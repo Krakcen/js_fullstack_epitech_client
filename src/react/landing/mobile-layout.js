@@ -1,26 +1,14 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import {
-  Button,
-  Container,
-  Header,
-  Icon,
-  Menu,
-  Responsive,
-  Segment,
-  Sidebar,
+  Container, Icon, Menu, Responsive, Segment, Sidebar,
 } from 'semantic-ui-react';
-import {
-  Link,
-  DirectLink,
-  Element,
-  Events,
-  animateScroll as scroll,
-  scrollSpy,
-  scroller,
-} from 'react-scroll';
+import { Link } from 'react-router-dom';
+import { scroller } from 'react-scroll';
 
 import { withTranslation } from 'react-i18next';
 import { HomepageHeading } from './landing';
+import { AuthButtons } from './components';
 
 const getWidth = () => {
   const isSSR = typeof window === 'undefined';
@@ -61,8 +49,12 @@ class MobileContainer extends Component {
           vertical
           visible={sidebarOpened}
         >
-          <Menu.Item as="a">{t('landing.menuStories')}</Menu.Item>
-          <Menu.Item as="a">{t('landing.menuProfile')}</Menu.Item>
+          <Link to="/stories">
+            <Menu.Item>{t('landing.menuStories')}</Menu.Item>
+          </Link>
+          {/* <Link to="/profile">
+            <Menu.Item>{t('landing.menuProfile')}</Menu.Item>
+          </Link> */}
         </Sidebar>
 
         <Sidebar.Pusher dimmed={sidebarOpened}>
@@ -78,12 +70,7 @@ class MobileContainer extends Component {
                   <Icon name="sidebar" />
                 </Menu.Item>
                 <Menu.Item position="right">
-                  <Button as="a" inverted>
-                    {t('landing.menuLogin')}
-                  </Button>
-                  <Button as="a" inverted style={{ marginLeft: '0.5em' }}>
-                    {t('landing.menuRegister')}
-                  </Button>
+                  <AuthButtons fixed={false} t={t} />
                 </Menu.Item>
               </Menu>
             </Container>
@@ -96,5 +83,9 @@ class MobileContainer extends Component {
     );
   }
 }
+MobileContainer.propTypes = {
+  children: PropTypes.node.isRequired,
+  t: PropTypes.func.isRequired,
+};
 
 export default withTranslation()(MobileContainer);
