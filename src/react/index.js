@@ -5,3 +5,4 @@ export { default as Story } from './story/story';
 export { default as Stories } from './stories/stories';
 export { default as Login } from './login-register/login';
 export { default as Register } from './login-register/register';
+export { default as StoryCreate } from './story-create/story-create';

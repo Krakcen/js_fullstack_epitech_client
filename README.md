@@ -1,3 +1,7 @@
+React (Context + Hooks)
+React Semantic UI
+Redux (only for redux form)
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

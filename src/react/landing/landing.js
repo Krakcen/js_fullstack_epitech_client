@@ -67,7 +67,12 @@ export const HomepageHeading = ({ mobile, handleArrowDownClick }) => {
       />
       <Button
         onClick={handleArrowDownClick}
-        style={{ marginTop: '100px', backgroundColor: Constants.primaryColor, color: 'white' }}
+        style={{
+          marginTop: '100px',
+          backgroundColor: 'transparent',
+          color: 'white',
+          border: '2px solid white',
+        }}
         size="huge"
         circular
         icon="arrow down"
@@ -122,33 +127,49 @@ class Landing extends Component {
     return (
       <ResponsiveContainer>
         <Element name="section_one" />
-        <Segment style={{ padding: '8em 0em' }} vertical>
+        <Segment style={{ padding: '8em 0em', backgroundColor: Constants.secondaryColor, borderTop: '1px solid rgba(34,36,38,.15)' }} vertical>
           <Grid container stackable verticalAlign="middle">
             <Grid.Row centered>
               <Grid.Column width={13}>
-                <Header as="h3" style={{ fontSize: '2em', textAlign: 'center' }}>
+                <Header as="h3" style={{ fontSize: '2em', textAlign: 'center', color: 'white' }}>
                   {t('landing.sectionOneHeaderOne')}
                 </Header>
-                <p style={{ fontSize: '1.33em', textAlign: 'center' }}>
+                <p style={{ fontSize: '1.33em', textAlign: 'center', color: 'white' }}>
                   {t('landing.sectionOneDescOne')}
                 </p>
-                <Header as="h3" style={{ fontSize: '2em', textAlign: 'center', marginTop: '70px' }}>
+                <Header
+                  as="h3"
+                  style={{
+                    fontSize: '2em',
+                    textAlign: 'center',
+                    marginTop: '70px',
+                    color: 'white',
+                  }}
+                >
                   {t('landing.sectionOneHeaderTwo')}
                 </Header>
-                <p style={{ fontSize: '1.33em', textAlign: 'center' }}>
+                <p style={{ fontSize: '1.33em', textAlign: 'center', color: 'white' }}>
                   {t('landing.sectionOneDescTwo')}
                 </p>
               </Grid.Column>
             </Grid.Row>
           </Grid>
         </Segment>
-        <Segment style={{ padding: '5.5em 0em' }} vertical>
+        <Segment
+          style={{ padding: '5.5em 0em', backgroundColor: Constants.secondaryColor }}
+          vertical
+        >
           <Grid container>
             <Grid.Row centered>
               <Grid.Column>
                 <Header
                   as="h3"
-                  style={{ fontSize: '3em', textAlign: 'center', marginBottom: '60px' }}
+                  style={{
+                    fontSize: '3em',
+                    textAlign: 'center',
+                    marginBottom: '60px',
+                    color: 'white',
+                  }}
                 >
                   {t('landing.sectionTwoHeader')}
                 </Header>
@@ -171,11 +192,13 @@ class Landing extends Component {
                       </Card.Content>
                       <Card.Content extra>
                         <div className="ui two buttons">
-                          <Button color="blue">{t('landing.sectionTwoButtonGoEdit')}</Button>
+                          <Button color="orange">{t('landing.sectionTwoButtonGoEdit')}</Button>
                         </div>
                       </Card.Content>
                       <Card.Content extra>
-                        <Header style={{ marginTop: '10px' }} textAlign="center" as="h5">Progression de l'histoire</Header>
+                        <Header style={{ marginTop: '10px' }} textAlign="center" as="h5">
+                          Progression de l'histoire
+                        </Header>
                         <Progress percent={el.progression} size="small" />
                       </Card.Content>
                     </Card>

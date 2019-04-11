@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { Provider, connect } from 'react-redux';
 import { I18nextProvider } from 'react-i18next';
@@ -12,10 +12,10 @@ import './semantic/dist/semantic.min.css';
 
 const App = () => {
   const [{ user }, dispatch] = useStateValue();
+  const [userLogLoading, setUserLogLoading] = useState(true);
 
   const performFirstLogin = async () => {
     try {
-      // dispatch({ type: 'SET_USER', payload: { loggedIn: true } });
       const userLog = await StoryLogin();
 
       if (localStorage.getItem('storyfactory-jwt') && !user.loggedIn) {
@@ -24,9 +24,11 @@ const App = () => {
           payload: { loggedIn: true, ...userLog },
         });
       }
+      setUserLogLoading(true);
       return;
     } catch (error) {
       console.log(error.message);
+      setUserLogLoading(true);
     }
   };
   useEffect(() => {
@@ -34,7 +36,7 @@ const App = () => {
     return () => {};
   }, []);
 
-  return <Routes />;
+  return <React.Fragment>{userLogLoading ? <Routes /> : 'Loading'}</React.Fragment>;
 };
 
 const mapStateToProps = state => ({

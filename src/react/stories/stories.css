@@ -1,0 +1,4 @@
+.ui.inverted.progress .bar{
+  background: coral !important;
+  border-radius: 0px;
+}

@@ -1,3 +1,2 @@
 export { default as StorySingle } from './StorySingle';
-
-export const eslint = 'ESLINT';
+export { default as StoryLoader } from './StoryLoader';
