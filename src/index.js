@@ -24,11 +24,11 @@ const App = () => {
           payload: { loggedIn: true, ...userLog },
         });
       }
-      setUserLogLoading(true);
+      setUserLogLoading(false);
       return;
     } catch (error) {
       console.log(error.message);
-      setUserLogLoading(true);
+      setUserLogLoading(false);
     }
   };
   useEffect(() => {
@@ -36,7 +36,7 @@ const App = () => {
     return () => {};
   }, []);
 
-  return <React.Fragment>{userLogLoading ? <Routes /> : 'Loading'}</React.Fragment>;
+  return <React.Fragment>{!userLogLoading ? <Routes /> : 'Loading'}</React.Fragment>;
 };
 
 const mapStateToProps = state => ({

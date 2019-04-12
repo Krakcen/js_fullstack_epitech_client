@@ -71,7 +71,7 @@ const StoryCreate = ({ handleSubmit, history }) => {
         }
         console.log('Story Created', story);
         Alert({
-          title: 'Votre story est crée !',
+          title: 'Votre histoire est créée !',
           timer: 4000,
           color: COLOR_SUCCESS,
         });
@@ -164,7 +164,7 @@ StoryCreate.propTypes = {
     goForward: PropTypes.func,
     length: PropTypes.number,
     listen: PropTypes.func,
-    location: PropTypes.func,
+    // location: PropTypes.func,
     push: PropTypes.func,
     replace: PropTypes.func,
   }).isRequired,

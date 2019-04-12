@@ -9,10 +9,13 @@ import { Link } from 'react-router-dom';
 import FadeIn from 'react-fade-in';
 
 import {
-  Constants, StorySocket, useStateValue, NavBar,
+  Constants, StorySocket, useStateValue, NavBar, StoryApp, Alert,
 } from '../global';
 import { StorySingle, StoryLoader } from './components';
 import './stories.css';
+
+const COLOR_ERROR = 'crimson';
+const COLOR_SUCCESS = '#21ba45';
 
 const Stories = () => {
   const [menuActive, setMenuActive] = useState('myStories');
@@ -36,6 +39,7 @@ const Stories = () => {
         }
         setMyStories(data.data);
         setMyStoriesLoading(false);
+        console.log(data.data);
       });
     } catch (error) {
       console.error(error);
@@ -59,6 +63,29 @@ const Stories = () => {
       });
     } catch (error) {
       console.error(error);
+    }
+  };
+
+  const deleteStory = async (story) => {
+    try {
+      const response = await StoryApp.service('story').remove(story._id);
+
+      const newStories = myStories.filter(storyItem => storyItem._id !== response._id);
+
+      setMyStories(newStories);
+
+      Alert({
+        title: `${response.title} supprimée`,
+        timer: 4000,
+        color: COLOR_SUCCESS,
+      });
+    } catch (error) {
+      console.error(error);
+      Alert({
+        title: error.message,
+        timer: 4000,
+        color: COLOR_ERROR,
+      });
     }
   };
 
@@ -124,7 +151,7 @@ const Stories = () => {
                       myStories.map(story => (
                         <Grid.Row key={story.title + story.synopsis} centered columns={1}>
                           <Grid.Column computer={8} tablet={12} mobile={15}>
-                            <StorySingle story={story} />
+                            <StorySingle myStories story={story} deleteStory={deleteStory} />
                           </Grid.Column>
                         </Grid.Row>
                       ))
@@ -155,7 +182,11 @@ const Stories = () => {
                       searchStories.map(story => (
                         <Grid.Row key={story.title + story.synopsis} centered columns={1}>
                           <Grid.Column computer={8} tablet={12} mobile={15}>
-                            <StorySingle story={story} />
+                            <StorySingle
+                              myStories={false}
+                              story={story}
+                              deleteStory={deleteStory}
+                            />
                           </Grid.Column>
                         </Grid.Row>
                       ))

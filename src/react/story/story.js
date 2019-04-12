@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Grid, Header, Form } from 'semantic-ui-react';
 // import faker from 'faker';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Redirect } from 'react-router-dom';
 import FadeIn from 'react-fade-in';
-import { Constants, NavBar, StorySocket } from '../global';
+import {
+  Constants, NavBar, StorySocket, StoryApp, useStateValue,
+} from '../global';
 import { StoryLoader } from '../stories/components';
 import {
   SectionStoryFirst,
@@ -29,36 +31,63 @@ const Story = ({ match }) => {
   const [storyBlockInput, setStoryBlockInput] = useState('');
   const [storyInitialLoading, setStoryInitialLoading] = useState(true);
   const [storyWhole, setStoryWhole] = useState(null);
+  const [{ user }] = useStateValue();
 
   const fetchStory = async () => {
     try {
-      StorySocket.emit('find', 'story', { _id: match.params.storyId }, (error, data) => {
-        console.log(error);
-        if (!data || !data.data || !data.data.length) {
-          setStoryInitialLoading(false);
-          return;
-        }
+      const data = await StoryApp.service('story').find({ query: { _id: match.params.storyId } });
 
-        console.log(data.data[0]);
+      console.log(data);
 
-        const newStory = [];
-        newStory.push({
-          title: data.data[0].title,
-          author: data.data[0].author,
-          full_text: data.data[0].synopsis,
-        });
-
-        data.data[0].blocks.map((el) => {
-          newStory.push({
-            title: null,
-            author: el.author,
-            full_text: el.context,
-          });
-          return 0;
-        });
-        setStoryInitialLoading(false);
-        setStoryWhole(newStory);
+      const newStory = [];
+      newStory.push({
+        title: data.data[0].title,
+        author: data.data[0].author,
+        full_text: data.data[0].synopsis,
       });
+
+      data.data[0].blocks.map((el) => {
+        newStory.push({
+          title: null,
+          author: el.author,
+          full_text: el.context,
+        });
+        return 0;
+      });
+      setStoryInitialLoading(false);
+      setStoryWhole(newStory);
+      // });
+    } catch (error) {
+      setStoryInitialLoading(false);
+      console.error(error);
+    }
+  };
+
+  const joinRoom = async () => {
+    try {
+      const joinRoomResponse = await StoryApp.service('methods').create({
+        method: 'join_story_room',
+        story_id: match.params.storyId,
+      });
+
+      console.log('JOIN ROOM: ', joinRoomResponse);
+
+      // if it doesnt exists, create one
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const leaveRoom = async () => {
+    try {
+      const leaveRoomResponse = await StoryApp.service('methods').create({
+        method: 'leave_story_room',
+        story_id: match.params.storyId,
+      });
+
+      console.log('LEFT ROOM: ', leaveRoomResponse);
+
+      // if it doesnt exists, create one
     } catch (error) {
       console.error(error);
     }
@@ -66,12 +95,21 @@ const Story = ({ match }) => {
 
   // Only on mount
   useEffect(() => {
-    setTimeout(() => {
-      fetchStory();
-    }, 1000);
-    // fetchStory();
+    fetchStory();
+    joinRoom();
 
-    return () => {};
+    StoryApp.service('methods').on('created', (data) => {
+      console.log('RECEIVED AN EVENT');
+      console.log(data);
+    });
+
+    window.onbeforeunload = () => {
+      leaveRoom();
+    };
+
+    return () => {
+      leaveRoom();
+    };
   }, []);
 
   const handleStoryBlockSubmit = async () => {
@@ -100,6 +138,7 @@ const Story = ({ match }) => {
         <StoryLoader />
       ) : (
         <React.Fragment>
+          {!user.loggedIn && <Redirect to="/login" />}
           {storyWhole ? (
             <React.Fragment>
               <div className="container">
@@ -178,3 +217,6 @@ Story.propTypes = {
 };
 
 export default withRouter(Story);
+
+// LEGACY
+// StorySocket.emit('find', 'story', { _id: match.params.storyId }, (error, data) => {});
