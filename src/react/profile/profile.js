@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 
-export default class LiveEdit extends Component {
+export default class Profile extends Component {
   componentDidMount = () => {};
 
   render() {
-    return <div>Live Edit</div>;
+    return <div>Profile</div>;
   }
 }
