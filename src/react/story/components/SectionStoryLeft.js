@@ -6,11 +6,11 @@ const SectionStoryLeft = ({ storyBlock, end, index }) => (
   <React.Fragment>
     <div className="row align-items-center how-it-works">
       <div style={{ left: '3px' }} className="col-2 text-center full">
-        <div className="story-circle">{index.toString()}</div>
+        <div className="story-circle">{(index - 1).toString()}</div>
       </div>
-      <div style={{ paddingTop: '20px', paddingBottom: '20px' }} className="col-6 text-left">
+      <div style={{ paddingTop: '20px', paddingBottom: end ? '50px' : '20px' }} className="col-6 text-left">
         <Header as="h2" style={{ color: 'white' }}>
-          {storyBlock.title}
+          {/* {storyBlock.title} */`Chapitre ${index - 1}`}
         </Header>
         <p style={{ fontSize: '1.2rem' }}>{storyBlock.full_text}</p>
       </div>

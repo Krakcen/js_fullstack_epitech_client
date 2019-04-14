@@ -9,6 +9,9 @@ const initialState = {
     loggedIn: false,
   },
   lang: cookieInstance.get('storyFactoryLang') || 'fr',
+  // story: {
+  //   users: [],
+  // },
 };
 
 const reducer = (state, action) => {
@@ -18,6 +21,11 @@ const reducer = (state, action) => {
         ...state,
         user: { ...state.user, ...action.payload },
       };
+    // case 'SET_STORY':
+    //   return {
+    //     ...state,
+    //     story: { ...state.story, ...action.payload },
+    //   };
     case 'SET_LANG':
       return {
         ...state,

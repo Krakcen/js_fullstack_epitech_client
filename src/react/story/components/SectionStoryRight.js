@@ -5,14 +5,14 @@ import PropTypes from 'prop-types';
 const SectionStoryRight = ({ storyBlock, end, index }) => (
   <React.Fragment>
     <div className="row align-items-center justify-content-end how-it-works">
-      <div style={{ paddingTop: '20px', paddingBottom: '20px' }} className="col-6 text-right">
+      <div style={{ paddingTop: '20px', paddingBottom: end ? '50px' : '20px' }} className="col-6 text-right">
         <Header as="h2" style={{ color: 'white' }}>
-          {storyBlock.title}
+          {/* {storyBlock.title} */`Chapitre ${index - 1}`}
         </Header>
         <p style={{ fontSize: '1.2rem' }}>{storyBlock.full_text}</p>
       </div>
       <div className="col-2 text-center full">
-        <div className="story-circle">{index.toString()}</div>
+        <div className="story-circle">{(index - 1).toString()}</div>
       </div>
     </div>
     {end ? null : (

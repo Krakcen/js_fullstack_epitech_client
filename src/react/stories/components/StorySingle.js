@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Card, Button, Progress, Icon,
+  Card, Button, Progress, Icon, Header,
 } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import { useSpring, animated } from 'react-spring';
@@ -33,6 +33,13 @@ const StoryCardHeader = styled(Card.Header)`
     color: white;
     font-size: 1.6rem;
     padding-bottom: 15px;
+  }
+`;
+
+const StoryCardAuthor = styled(Card.Header)`
+  &&&&&&&& {
+    color: white;
+    font-size: 1rem;
   }
 `;
 
@@ -85,6 +92,8 @@ DeleteStory.propTypes = {
 const StorySingle = ({ story, deleteStory, myStories }) => {
   const [deleteState, setDeleteState] = useState('inactive');
 
+  console.log(story);
+
   const animatedProps = useSpring({
     from: { background: Constants.secondaryColor },
     to: {
@@ -106,6 +115,7 @@ const StorySingle = ({ story, deleteStory, myStories }) => {
           <React.Fragment>
             <StoryCardContent>
               <StoryCardHeader>
+                { myStories ? null : <StoryCardAuthor>{`de: ${story.author.username}`}</StoryCardAuthor>}
                 {story.title}
                 { myStories && <StoryDeleteIcon onClick={() => setDeleteState('confirm')} name="times" />}
               </StoryCardHeader>
@@ -133,7 +143,7 @@ const StorySingle = ({ story, deleteStory, myStories }) => {
               >
                 Progression:
                 {' '}
-                {`${(story.blocks.length / story.nombreOfBlockDefault) * 100}%`}
+                {`${Math.round((story.blocks.length / story.nombreOfBlockDefault) * 100)}%`}
               </p>
             </StoryCardContent>
             <StoryCardContent textAlign="center">

@@ -6,13 +6,13 @@ const SectionStoryFirst = ({ storyBlock }) => (
   <React.Fragment>
     <div className="row align-items-center how-it-works">
       <div className="col-2 text-center bottom">
-        <div className="story-circle">1</div>
+        <div className="story-circle">S</div>
       </div>
       <div style={{ paddingBottom: '20px' }} className="col-6">
-        <Header as="h2" style={{ color: 'white' }}>
+        <Header as="h1" style={{ color: 'white' }}>
           Synopsis
         </Header>
-        <p style={{ fontSize: '1.2rem' }}>
+        <p style={{ fontSize: '1.3rem' }}>
           { storyBlock.full_text }
         </p>
       </div>

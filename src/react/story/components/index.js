@@ -4,3 +4,5 @@ export { default as SectionStoryLeft } from './SectionStoryLeft';
 export { default as StoryTextArea } from './StoryTextArea';
 export { default as StoryButton } from './StoryButton';
 export { default as NoStory } from './NoStory';
+export { default as UserBubbles } from './UserBubbles';
+export { default as StoryFinishedSegment } from './StoryFinishedSegment';

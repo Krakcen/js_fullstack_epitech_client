@@ -11,18 +11,19 @@ import FadeIn from 'react-fade-in';
 import {
   Constants, StorySocket, useStateValue, NavBar, StoryApp, Alert,
 } from '../global';
-import { StorySingle, StoryLoader } from './components';
+import { StorySingle, StoryLoader, StorySearch } from './components';
 import './stories.css';
 
 const COLOR_ERROR = 'crimson';
 const COLOR_SUCCESS = '#21ba45';
 
 const Stories = () => {
-  const [menuActive, setMenuActive] = useState('myStories');
+  const [menuActive, setMenuActive] = useState('searchStories');
   const [myStories, setMyStories] = useState([]);
   const [myStoriesLoading, setMyStoriesLoading] = useState(false);
   const [searchStories, setSearchStories] = useState([]);
   const [searchStoriesLoading, setSearchStoriesLoading] = useState(false);
+  const [timeoutSearch, setTimeoutSearch] = useState(null);
   const [{ user }] = useStateValue();
 
   const fetchMyStories = async () => {
@@ -46,21 +47,33 @@ const Stories = () => {
     }
   };
 
-  const fetchSearchStories = async () => {
+  const fetchSearchStories = async (query = '') => {
     try {
-      setSearchStories([]);
       setSearchStoriesLoading(true);
 
-      StorySocket.emit('find', 'story', {}, (error, data) => {
-        if (!data || !data.data || !data.data.length) {
-          console.log('nope');
-          setSearchStories([]);
+      StorySocket.emit(
+        'find',
+        'story',
+        {
+          $or: [
+            { title: { $regex: query, $options: 'i' } },
+            { synopsis: { $regex: query, $options: 'i' } },
+          ],
+          $limit: 5,
+        },
+        (error, data) => {
+          if (!data || !data.data || !data.data.length) {
+            console.log('nope');
+            setSearchStories([]);
+            setSearchStoriesLoading(false);
+            return;
+          }
+          setSearchStories(
+            data.data.map(storyEl => ({ ...storyEl, key: Math.random().toString() })),
+          );
           setSearchStoriesLoading(false);
-          return;
-        }
-        setSearchStories(data.data);
-        setSearchStoriesLoading(false);
-      });
+        },
+      );
     } catch (error) {
       console.error(error);
     }
@@ -89,6 +102,20 @@ const Stories = () => {
     }
   };
 
+  const handleSearchChange = async (e, d) => {
+    let query = d.value;
+    if (!query || !query.length) query = '';
+
+    setSearchStoriesLoading(true);
+
+    setTimeoutSearch((oldTimeoutSearch) => {
+      if (oldTimeoutSearch) clearTimeout(oldTimeoutSearch);
+      return setTimeout(() => {
+        fetchSearchStories(query);
+      }, 500);
+    });
+  };
+
   useEffect(() => {
     if (menuActive === 'myStories' && user._id) {
       fetchMyStories();
@@ -101,6 +128,8 @@ const Stories = () => {
   const handleMenuActive = (e, { name }) => {
     setMenuActive(name);
   };
+
+  console.log(searchStories);
 
   return (
     <div
@@ -172,39 +201,47 @@ const Stories = () => {
             </FadeIn>
           )}
           {menuActive === 'searchStories' && (
-            <FadeIn delay={0}>
-              <Grid style={{ overflowY: 'auto', paddingBottom: '50px', minHeight: '300px' }}>
-                {searchStoriesLoading ? (
-                  <StoryLoader />
+            <Grid style={{ overflowY: 'auto', paddingBottom: '50px', minHeight: '300px' }}>
+              <Grid.Row style={{ marginBottom: '30px' }} centered columns={1}>
+                <Grid.Column computer={6} tablet={12} mobile={15}>
+                  <StorySearch
+                    onChange={handleSearchChange}
+                    size="big"
+                    fluid
+                    placeholder="Rechercher par nom ou synopsis"
+                  />
+                </Grid.Column>
+              </Grid.Row>
+              <React.Fragment>
+                {searchStoriesLoading && <StoryLoader />}
+                {searchStories.length ? (
+                  searchStories.map((story, index) => (
+                    <Grid.Row
+                      key={story.key}
+                      style={{ visibility: searchStoriesLoading ? 'hidden' : 'visible' }}
+                      centered
+                      columns={1}
+                    >
+                      <Grid.Column computer={8} tablet={12} mobile={15}>
+                        <FadeIn delay={index * 50}>
+                          <StorySingle myStories={false} story={story} deleteStory={deleteStory} />
+                        </FadeIn>
+                      </Grid.Column>
+                    </Grid.Row>
+                  ))
                 ) : (
-                  <React.Fragment>
-                    {searchStories.length ? (
-                      searchStories.map(story => (
-                        <Grid.Row key={story.title + story.synopsis} centered columns={1}>
-                          <Grid.Column computer={8} tablet={12} mobile={15}>
-                            <StorySingle
-                              myStories={false}
-                              story={story}
-                              deleteStory={deleteStory}
-                            />
-                          </Grid.Column>
-                        </Grid.Row>
-                      ))
-                    ) : (
-                      <Grid.Row>
-                        <Grid.Column>
-                          <Container>
-                            <Header style={{ color: 'white' }} textAlign="center">
-                              {"Pas encore d'histoire écrite"}
-                            </Header>
-                          </Container>
-                        </Grid.Column>
-                      </Grid.Row>
-                    )}
-                  </React.Fragment>
+                  <Grid.Row>
+                    <Grid.Column>
+                      <Container>
+                        <Header style={{ color: 'white' }} textAlign="center">
+                          {"Pas encore d'histoire écrite"}
+                        </Header>
+                      </Container>
+                    </Grid.Column>
+                  </Grid.Row>
                 )}
-              </Grid>
-            </FadeIn>
+              </React.Fragment>
+            </Grid>
           )}
         </React.Fragment>
       ) : (

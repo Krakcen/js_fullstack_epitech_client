@@ -4,7 +4,9 @@ import { Link } from 'react-router-dom';
 import { Grid, Button, Icon } from 'semantic-ui-react';
 import { StoryButton, useStateValue } from '.';
 
-const NavBar = ({ backTo, backText, createStory = true }) => {
+const NavBar = ({
+  backTo, backText, createStory = true, children,
+}) => {
   const [{ user }] = useStateValue();
   return (
     <Grid container>
@@ -17,13 +19,18 @@ const NavBar = ({ backTo, backText, createStory = true }) => {
             </Button>
           </Link>
         </Grid.Column>
-        {(user.loggedIn && createStory) && (
+        {user.loggedIn && createStory && (
           <Grid.Column floated="right" style={{ paddingBottom: '50px', textAlign: 'right' }}>
             <Link to="/story-create">
               <StoryButton size="big" primary>
                 Créer une histoire
               </StoryButton>
             </Link>
+          </Grid.Column>
+        )}
+        {children && (
+          <Grid.Column floated="right" style={{ paddingBottom: '50px', textAlign: 'right' }}>
+            {children}
           </Grid.Column>
         )}
       </Grid.Row>
@@ -34,6 +41,10 @@ NavBar.propTypes = {
   backTo: PropTypes.string.isRequired,
   backText: PropTypes.string.isRequired,
   createStory: PropTypes.bool.isRequired,
+  children: PropTypes.node,
+};
+NavBar.defaultProps = {
+  children: false,
 };
 
 export default NavBar;

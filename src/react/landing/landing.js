@@ -1,26 +1,18 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Button,
-  Container,
-  Grid,
-  Header,
-  List,
-  Segment,
-  Flag,
-  Card,
-  Progress,
+  Button, Container, Grid, Header, List, Segment, Flag,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import i18n from 'i18next';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import Cookies from 'universal-cookie';
 import { Element } from 'react-scroll';
 import faker from 'faker';
 import { useTranslation, withTranslation } from 'react-i18next';
 
 import { setLang as setLangAction } from '../../redux/actions';
-import { Constants } from '../global';
+import { Constants, StoryButton } from '../global';
 import DesktopContainer from './desktop-layout';
 import MobileContainer from './mobile-layout';
 
@@ -127,14 +119,21 @@ class Landing extends Component {
     return (
       <ResponsiveContainer>
         <Element name="section_one" />
-        <Segment style={{ padding: '8em 0em', backgroundColor: Constants.secondaryColor, borderTop: '1px solid rgba(34,36,38,.15)' }} vertical>
+        <Segment
+          style={{
+            padding: '8em 0em',
+            backgroundColor: 'white',
+            borderTop: '1px solid rgba(34,36,38,.15)',
+          }}
+          vertical
+        >
           <Grid container stackable verticalAlign="middle">
             <Grid.Row centered>
               <Grid.Column width={13}>
-                <Header as="h3" style={{ fontSize: '2em', textAlign: 'center', color: 'white' }}>
+                <Header as="h3" style={{ fontSize: '2em', textAlign: 'center', color: Constants.primaryColor }}>
                   {t('landing.sectionOneHeaderOne')}
                 </Header>
-                <p style={{ fontSize: '1.33em', textAlign: 'center', color: 'white' }}>
+                <p style={{ fontSize: '1.33em', textAlign: 'center', color: 'black' }}>
                   {t('landing.sectionOneDescOne')}
                 </p>
                 <Header
@@ -143,12 +142,12 @@ class Landing extends Component {
                     fontSize: '2em',
                     textAlign: 'center',
                     marginTop: '70px',
-                    color: 'white',
+                    color: Constants.primaryColor,
                   }}
                 >
                   {t('landing.sectionOneHeaderTwo')}
                 </Header>
-                <p style={{ fontSize: '1.33em', textAlign: 'center', color: 'white' }}>
+                <p style={{ fontSize: '1.33em', textAlign: 'center', color: 'black' }}>
                   {t('landing.sectionOneDescTwo')}
                 </p>
               </Grid.Column>
@@ -161,8 +160,13 @@ class Landing extends Component {
         >
           <Grid container>
             <Grid.Row centered>
-              <Grid.Column>
-                <Header
+              <Grid.Column style={{ textAlign: 'center' }}>
+                <Link to="/stories">
+                  <StoryButton size="huge" primary>
+                    Commencer !
+                  </StoryButton>
+                </Link>
+                {/* <Header
                   as="h3"
                   style={{
                     fontSize: '3em',
@@ -203,7 +207,7 @@ class Landing extends Component {
                       </Card.Content>
                     </Card>
                   ))}
-                </Card.Group>
+                  </Card.Group> */}
               </Grid.Column>
             </Grid.Row>
           </Grid>
