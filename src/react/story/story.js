@@ -1,13 +1,19 @@
 /* eslint-disable no-underscore-dangle */
 
 import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
 import { Grid, Header, Form } from 'semantic-ui-react';
-// import faker from 'faker';
 import { withRouter, Redirect } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import FadeIn from 'react-fade-in';
 import {
-  Constants, NavBar, StoryApp, useStateValue, Alert,
+  Constants,
+  NavBar,
+  StoryApp,
+  useStateValue,
+  Alert,
+  LanguageFooter,
+  historyReactRouter,
+  matchReactRouter,
 } from '../global';
 import { StoryLoader } from '../stories/components';
 import {
@@ -32,6 +38,7 @@ const Story = ({ match, history }) => {
   const [storyLength, setStoryLength] = useState(0);
   const [storyAuthor, setStoryAuthor] = useState('...');
   const [connectedUsers, setConnectedUsers] = useState([]);
+  const [t] = useTranslation();
   const [{ user }] = useStateValue();
 
   const fetchStory = async () => {
@@ -39,8 +46,6 @@ const Story = ({ match, history }) => {
       const data = await StoryApp.service('story').find({ query: { _id: match.params.storyId } });
 
       if (!data || !data.data || data.data.length !== 1) throw new Error('no story found');
-
-      console.log(data.data[0]);
 
       const newStory = [];
       newStory.push({
@@ -70,13 +75,14 @@ const Story = ({ match, history }) => {
 
   const handleStoryBlockSubmit = async () => {
     try {
-      console.log('SUBMITTED: ', storyBlockInput);
+      // console.log('SUBMITTED: ', storyBlockInput);
       if (!storyBlockInput.length) {
         Alert({
-          title: 'Votre texte est vide :)',
+          title: t('story.msgEmptyText'),
           timer: 4000,
           color: COLOR_ERROR,
         });
+        return;
       }
 
       await StoryApp.service('methods').create({
@@ -86,7 +92,7 @@ const Story = ({ match, history }) => {
       });
 
       Alert({
-        title: 'Merci pour votre contribution !',
+        title: t('story.msgThanks'),
         timer: 4000,
         color: COLOR_SUCCESS,
       });
@@ -96,14 +102,14 @@ const Story = ({ match, history }) => {
       switch (error.message) {
         case 'short_text':
           Alert({
-            title: 'Votre texte est trop petit, longueur minimale: 200 caractères',
+            title: t('story.msgShort'),
             timer: 4000,
             color: COLOR_ERROR,
           });
           break;
         case 'story_finished':
           Alert({
-            title: 'Cette histoire est terminée',
+            title: t('story.msgEnded'),
             timer: 4000,
             color: COLOR_ERROR,
           });
@@ -111,7 +117,7 @@ const Story = ({ match, history }) => {
         default:
           break;
       }
-      console.error(error.message);
+      // console.error(error.message);
     }
   };
 
@@ -143,8 +149,6 @@ const Story = ({ match, history }) => {
         author: blockToAdd.author,
         full_text: blockToAdd.full_text,
       });
-      console.log(oldStoryWhole);
-      console.log(newStory);
       return newStory;
     });
   };
@@ -163,13 +167,13 @@ const Story = ({ match, history }) => {
       //   payload: { users: roomInfo },
       // });
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     }
   };
 
   const joinRoom = async () => {
     try {
-      const joinRoomResponse = await StoryApp.service('methods').create({
+      await StoryApp.service('methods').create({
         method: 'join_story_room',
         story_id: match.params.storyId,
       });
@@ -183,7 +187,7 @@ const Story = ({ match, history }) => {
       switch (error.message) {
         case 'already_connected_client':
           Alert({
-            title: 'Il semble que vous soyez déja connecté dans cette histoire.',
+            title: t('story.msgAlreadyConnected'),
             timer: 8000,
             color: COLOR_ERROR,
           });
@@ -192,22 +196,20 @@ const Story = ({ match, history }) => {
         default:
           break;
       }
-      console.error(error);
+      // console.error(error);
     }
   };
 
   const leaveRoom = async () => {
     try {
-      const leaveRoomResponse = await StoryApp.service('methods').create({
+      await StoryApp.service('methods').create({
         method: 'leave_story_room',
         story_id: match.params.storyId,
       });
 
-      console.log('LEFT ROOM: ', leaveRoomResponse);
-
       // if it doesnt exists, create one
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     }
   };
 
@@ -218,7 +220,6 @@ const Story = ({ match, history }) => {
 
     StoryApp.service('methods').on('created', (data) => {
       if (!data || !data.action_type) throw new Error('invalid response');
-      console.log(`EVENT RECEIVED: ${data.action_type}`);
       switch (data.action_type) {
         case 'user_join':
           checkBeforeAddUser(data.payload.username);
@@ -260,8 +261,8 @@ const Story = ({ match, history }) => {
       }}
       className="container-fluid blue-bg"
     >
-      <NavBar createStory={false} backText="Retour" backTo="/stories">
-        <UserBubbles usernames={connectedUsers} you={user.username} />
+      <NavBar createStory={false} backText={t('global.goBackButton')} backTo="/stories">
+        <UserBubbles t={t} usernames={connectedUsers} you={user.username} />
       </NavBar>
 
       {/* Content */}
@@ -275,7 +276,7 @@ const Story = ({ match, history }) => {
               <div className="container">
                 <Header style={{ color: 'white', marginBottom: '70px', fontSize: '3rem' }} as="h1">
                   <Header.Subheader style={{ color: 'white', fontSize: '1.3rem' }}>
-                    {`de: ${storyAuthor.username}`}
+                    {`${t('stories.by')} ${storyAuthor.username}`}
                   </Header.Subheader>
                   {`${storyWhole[0].title.toUpperCase()}`}
                 </Header>
@@ -286,6 +287,7 @@ const Story = ({ match, history }) => {
                       {i === 0 && <SectionStoryFirst storyBlock={storyBlock} />}
                       {i !== 0 && i % 2 === 0 && (
                         <SectionStoryLeft
+                          t={t}
                           index={i + 1}
                           end={storyWhole.length === i + 1}
                           storyBlock={storyBlock}
@@ -293,6 +295,7 @@ const Story = ({ match, history }) => {
                       )}
                       {i !== 0 && i % 2 !== 0 && (
                         <SectionStoryRight
+                          t={t}
                           index={i + 1}
                           end={storyWhole.length === i + 1}
                           storyBlock={storyBlock}
@@ -312,7 +315,7 @@ const Story = ({ match, history }) => {
                             onChange={(e, d) => setStoryBlockInput(d.value)}
                             value={storyBlockInput}
                             rows={6}
-                            placeholder="Et ensuite..."
+                            placeholder={t('story.inputPlaceholder')}
                           />
                         </FadeIn>
                       </Grid.Column>
@@ -320,7 +323,7 @@ const Story = ({ match, history }) => {
                     <Grid.Row style={{ paddingTop: '0px' }}>
                       <Grid.Column textAlign="center">
                         <StoryButton type="submit" color="orange" size="massive">
-                          Envoyer
+                          {t('story.sendButton')}
                         </StoryButton>
                       </Grid.Column>
                     </Grid.Row>
@@ -331,7 +334,11 @@ const Story = ({ match, history }) => {
                   <Grid.Row style={{ paddingBottom: '0px' }}>
                     <Grid.Column>
                       <FadeIn delay={0}>
-                        <StoryFinishedSegment compact><p style={{ textAlign: 'center', fontSize: '1.5rem' }}>Cette histoire est terminée !</p></StoryFinishedSegment>
+                        <StoryFinishedSegment compact>
+                          <p style={{ textAlign: 'center', fontSize: '1.5rem' }}>
+                            {t('story.storyFinished')}
+                          </p>
+                        </StoryFinishedSegment>
                       </FadeIn>
                     </Grid.Column>
                   </Grid.Row>
@@ -343,37 +350,13 @@ const Story = ({ match, history }) => {
           )}
         </React.Fragment>
       )}
+      <LanguageFooter />
     </div>
   );
 };
 Story.propTypes = {
-  location: PropTypes.shape({
-    hash: PropTypes.string,
-    key: PropTypes.string,
-    pathname: PropTypes.string,
-    search: PropTypes.string,
-  }).isRequired,
-  history: PropTypes.shape({
-    action: PropTypes.string,
-    block: PropTypes.func,
-    createHref: PropTypes.func,
-    go: PropTypes.func,
-    goBack: PropTypes.func,
-    goForward: PropTypes.func,
-    length: PropTypes.number,
-    listen: PropTypes.func,
-    // location: PropTypes.func,
-    push: PropTypes.func,
-    replace: PropTypes.func,
-  }).isRequired,
-  match: PropTypes.shape({
-    isExact: PropTypes.bool,
-    params: PropTypes.shape({
-      storyId: PropTypes.string,
-    }),
-    path: PropTypes.string,
-    url: PropTypes.string,
-  }).isRequired,
+  history: historyReactRouter.isRequired,
+  match: matchReactRouter.isRequired,
 };
 
 export default withRouter(Story);

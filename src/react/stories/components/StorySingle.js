@@ -3,8 +3,9 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Card, Button, Progress, Icon, Header,
+  Card, Button, Progress, Icon,
 } from 'semantic-ui-react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useSpring, animated } from 'react-spring';
 import styled from 'styled-components';
@@ -64,10 +65,12 @@ const StoryDeleteIcon = styled(Icon)`
   }
 `;
 
-const DeleteStory = ({ deleteStory, title, cancelDelete }) => (
+const DeleteStory = ({
+  deleteStory, title, cancelDelete, t,
+}) => (
   <StoryCardContent>
-    <StoryCardHeader>Êtes vous sûr de supprimer cette histoire ?</StoryCardHeader>
-    <StoryCardDescription>{`${title} ne sera plus disponible sur le site :(`}</StoryCardDescription>
+    <StoryCardHeader>{t('stories.deleteHeader')}</StoryCardHeader>
+    <StoryCardDescription>{`${title} ${t('stories.deleteContent')}`}</StoryCardDescription>
     <StoryCardContent style={{ paddingTop: '40px' }} textAlign="center">
       <Button
         style={{ borderRadius: '20px', marginRight: '10px' }}
@@ -75,10 +78,10 @@ const DeleteStory = ({ deleteStory, title, cancelDelete }) => (
         size="large"
         onClick={cancelDelete}
       >
-        Annuler
+        {t('stories.deleteButtonCancel')}
       </Button>
       <Button style={{ borderRadius: '20px' }} negative size="large" onClick={deleteStory}>
-        Je suis sûr
+        {t('stories.deleteButtonConfirm')}
       </Button>
     </StoryCardContent>
   </StoryCardContent>
@@ -87,12 +90,14 @@ DeleteStory.propTypes = {
   deleteStory: PropTypes.func.isRequired,
   cancelDelete: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
 const StorySingle = ({ story, deleteStory, myStories }) => {
   const [deleteState, setDeleteState] = useState('inactive');
+  const [t] = useTranslation();
 
-  console.log(story);
+  // console.log(story);
 
   const animatedProps = useSpring({
     from: { background: Constants.secondaryColor },
@@ -107,6 +112,7 @@ const StorySingle = ({ story, deleteStory, myStories }) => {
       <StoryCard fluid>
         {deleteState === 'confirm' ? (
           <DeleteStory
+            t={t}
             title={story.title}
             deleteStory={() => deleteStory(story)}
             cancelDelete={() => setDeleteState('inactive')}
@@ -115,9 +121,13 @@ const StorySingle = ({ story, deleteStory, myStories }) => {
           <React.Fragment>
             <StoryCardContent>
               <StoryCardHeader>
-                { myStories ? null : <StoryCardAuthor>{`de: ${story.author.username}`}</StoryCardAuthor>}
+                {myStories ? null : (
+                  <StoryCardAuthor>{`${t('stories.by')} ${story.author.username}`}</StoryCardAuthor>
+                )}
                 {story.title}
-                { myStories && <StoryDeleteIcon onClick={() => setDeleteState('confirm')} name="times" />}
+                {myStories && (
+                  <StoryDeleteIcon onClick={() => setDeleteState('confirm')} name="times" />
+                )}
               </StoryCardHeader>
               <StoryCardDescription>{story.synopsis}</StoryCardDescription>
             </StoryCardContent>
@@ -149,7 +159,7 @@ const StorySingle = ({ story, deleteStory, myStories }) => {
             <StoryCardContent textAlign="center">
               <Link to={`/awesome-story/${story._id}`}>
                 <StoryButton primary size="large">
-                  Edit the story
+                  {t('stories.editStoryButton')}
                 </StoryButton>
               </Link>
             </StoryCardContent>

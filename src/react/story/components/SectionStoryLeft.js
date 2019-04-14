@@ -2,15 +2,20 @@ import React from 'react';
 import { Header } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 
-const SectionStoryLeft = ({ storyBlock, end, index }) => (
+const SectionStoryLeft = ({
+  storyBlock, end, index, t,
+}) => (
   <React.Fragment>
     <div className="row align-items-center how-it-works">
       <div style={{ left: '3px' }} className="col-2 text-center full">
         <div className="story-circle">{(index - 1).toString()}</div>
       </div>
-      <div style={{ paddingTop: '20px', paddingBottom: end ? '50px' : '20px' }} className="col-6 text-left">
+      <div
+        style={{ paddingTop: '20px', paddingBottom: end ? '50px' : '20px' }}
+        className="col-6 text-left"
+      >
         <Header as="h2" style={{ color: 'white' }}>
-          {/* {storyBlock.title} */`Chapitre ${index - 1}`}
+          {/* {storyBlock.title} */ `${t('story.chapter')} ${index - 1}`}
         </Header>
         <p style={{ fontSize: '1.2rem' }}>{storyBlock.full_text}</p>
       </div>
@@ -37,6 +42,7 @@ SectionStoryLeft.propTypes = {
   }).isRequired,
   end: PropTypes.bool.isRequired,
   index: PropTypes.number.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
 export default SectionStoryLeft;

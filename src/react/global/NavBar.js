@@ -1,12 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Grid, Button, Icon } from 'semantic-ui-react';
 import { StoryButton, useStateValue } from '.';
 
 const NavBar = ({
   backTo, backText, createStory = true, children,
 }) => {
+  const [t] = useTranslation();
   const [{ user }] = useStateValue();
   return (
     <Grid container>
@@ -23,7 +25,7 @@ const NavBar = ({
           <Grid.Column floated="right" style={{ paddingBottom: '50px', textAlign: 'right' }}>
             <Link to="/story-create">
               <StoryButton size="big" primary>
-                Créer une histoire
+                {t('global.createStory')}
               </StoryButton>
             </Link>
           </Grid.Column>

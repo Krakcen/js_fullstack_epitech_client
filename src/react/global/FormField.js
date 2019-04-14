@@ -13,7 +13,13 @@ const FormField = ({ input, label, type }) => (
   </Form.Field>
 );
 FormField.propTypes = {
-  input: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
+  input: PropTypes.shape({
+    name: PropTypes.string,
+    onBlur: PropTypes.func,
+    onChange: PropTypes.func,
+    onDragStart: PropTypes.func,
+    onDrop: PropTypes.func,
+  }).isRequired,
   label: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
 };

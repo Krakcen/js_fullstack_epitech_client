@@ -20,16 +20,16 @@ const HeaderBubbles = styled.p`
   font-weight: bold;
 `;
 
-const UserBubbles = ({ usernames, you }) => (
+const UserBubbles = ({ usernames, you, t }) => (
   <React.Fragment>
     {!usernames || !usernames.length ? null : (
       <React.Fragment>
         <span>
-          <HeaderBubbles>Auteurs actifs</HeaderBubbles>
+          <HeaderBubbles>{t('story.activeAuthors')}</HeaderBubbles>
           {usernames.map(username => (
             <FadeIn key={username} delay={0}>
               <UserSegment floated="right" compact>
-                {username === you ? `${username} (vous)` : username}
+                {username === you ? `${username} (${t('story.you')})` : username}
               </UserSegment>
             </FadeIn>
           ))}
@@ -41,6 +41,7 @@ const UserBubbles = ({ usernames, you }) => (
 UserBubbles.propTypes = {
   usernames: PropTypes.arrayOf(PropTypes.string).isRequired,
   you: PropTypes.string.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
 export default UserBubbles;

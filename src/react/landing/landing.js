@@ -12,7 +12,7 @@ import faker from 'faker';
 import { useTranslation, withTranslation } from 'react-i18next';
 
 import { setLang as setLangAction } from '../../redux/actions';
-import { Constants, StoryButton } from '../global';
+import { Constants, StoryButton, historyReactRouter } from '../global';
 import DesktopContainer from './desktop-layout';
 import MobileContainer from './mobile-layout';
 
@@ -130,7 +130,7 @@ class Landing extends Component {
           <Grid container stackable verticalAlign="middle">
             <Grid.Row centered>
               <Grid.Column width={13}>
-                <Header as="h3" style={{ fontSize: '2em', textAlign: 'center', color: Constants.primaryColor }}>
+                <Header as="h3" style={{ fontSize: '2em', textAlign: 'center', color: Constants.secondaryColor }}>
                   {t('landing.sectionOneHeaderOne')}
                 </Header>
                 <p style={{ fontSize: '1.33em', textAlign: 'center', color: 'black' }}>
@@ -142,7 +142,7 @@ class Landing extends Component {
                     fontSize: '2em',
                     textAlign: 'center',
                     marginTop: '70px',
-                    color: Constants.primaryColor,
+                    color: Constants.secondaryColor,
                   }}
                 >
                   {t('landing.sectionOneHeaderTwo')}
@@ -155,7 +155,7 @@ class Landing extends Component {
           </Grid>
         </Segment>
         <Segment
-          style={{ padding: '5.5em 0em', backgroundColor: Constants.secondaryColor }}
+          style={{ padding: '5.5em 0em', backgroundColor: Constants.secondaryColor, border: 'none' }}
           vertical
         >
           <Grid container>
@@ -163,70 +163,28 @@ class Landing extends Component {
               <Grid.Column style={{ textAlign: 'center' }}>
                 <Link to="/stories">
                   <StoryButton size="huge" primary>
-                    Commencer !
+                    {t('landing.startButton')}
                   </StoryButton>
                 </Link>
-                {/* <Header
-                  as="h3"
-                  style={{
-                    fontSize: '3em',
-                    textAlign: 'center',
-                    marginBottom: '60px',
-                    color: 'white',
-                  }}
-                >
-                  {t('landing.sectionTwoHeader')}
-                </Header>
-                <Card.Group textAlign="center" itemsPerRow={3}>
-                  {fakeData.map(el => (
-                    <Card link onClick={this.goToStory} key={el.synopsis}>
-                      <Card.Content>
-                        <Card.Header>
-                          <Grid>
-                            <Grid.Column width={12}>
-                              <p>{el.title}</p>
-                            </Grid.Column>
-                            <Grid.Column textAlign="right" width={4}>
-                              <i className="fas fa-scroll" />
-                            </Grid.Column>
-                          </Grid>
-                        </Card.Header>
-                        <Card.Meta>{`Imaginé par ${el.ownerName}`}</Card.Meta>
-                        <Card.Description>{el.synopsis}</Card.Description>
-                      </Card.Content>
-                      <Card.Content extra>
-                        <div className="ui two buttons">
-                          <Button color="orange">{t('landing.sectionTwoButtonGoEdit')}</Button>
-                        </div>
-                      </Card.Content>
-                      <Card.Content extra>
-                        <Header style={{ marginTop: '10px' }} textAlign="center" as="h5">
-                          Progression de l'histoire
-                        </Header>
-                        <Progress percent={el.progression} size="small" />
-                      </Card.Content>
-                    </Card>
-                  ))}
-                  </Card.Group> */}
               </Grid.Column>
             </Grid.Row>
           </Grid>
         </Segment>
-        <Segment inverted vertical style={{ padding: '5em 0em' }}>
+        <Segment inverted vertical style={{ padding: '5em 0em', backgroundColor: Constants.secondaryColor }}>
           <Container>
             <Grid divided inverted stackable>
               <Grid.Row>
-                <Grid.Column width={3}>
+                {/* <Grid.Column width={3}>
                   <Header inverted as="h4" content={t('landing.footerHeaderOne')} />
                   <List link inverted>
                     <List.Item as="a">{t('landing.legalLink')}</List.Item>
                   </List>
-                </Grid.Column>
+                </Grid.Column> */}
                 <Grid.Column width={3}>
-                  <Header inverted as="h4" content="Language" />
+                  <Header inverted as="h3" content="Language" />
                   <List link inverted>
                     <List.Item onClick={this.handleLanguageChange} as="a">
-                      <Flag name={storyFactoryLang} />
+                      <Flag name={(storyFactoryLang === 'en' || storyFactoryLang === 'us') ? 'us' : 'fr'} />
                     </List.Item>
                   </List>
                 </Grid.Column>
@@ -242,7 +200,7 @@ Landing.propTypes = {
   t: PropTypes.func.isRequired,
   storyFactoryLang: PropTypes.string.isRequired,
   setLang: PropTypes.func.isRequired,
-  history: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
+  history: historyReactRouter.isRequired,
 };
 
 const mapStateToProps = state => ({

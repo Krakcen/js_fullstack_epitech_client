@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Form, Header } from 'semantic-ui-react';
+import { Form } from 'semantic-ui-react';
 import styled from 'styled-components';
 import { StoryTextArea } from '../../story/components';
 
@@ -42,7 +42,13 @@ export const FormFieldTextArea = ({ input, label, type }) => (
   </Form.Field>
 );
 FormFieldTextArea.propTypes = {
-  input: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
+  input: PropTypes.shape({
+    name: PropTypes.string,
+    onBlur: PropTypes.func,
+    onChange: PropTypes.func,
+    onDragStart: PropTypes.func,
+    onDrop: PropTypes.func,
+  }).isRequired,
   label: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
 };
@@ -56,7 +62,13 @@ export const FormFieldInput = ({
   </Form.Field>
 );
 FormFieldInput.propTypes = {
-  input: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
+  input: PropTypes.shape({
+    name: PropTypes.string,
+    onBlur: PropTypes.func,
+    onChange: PropTypes.func,
+    onDragStart: PropTypes.func,
+    onDrop: PropTypes.func,
+  }).isRequired,
   label: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
 };

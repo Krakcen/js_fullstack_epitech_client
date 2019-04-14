@@ -4,11 +4,12 @@ import {
   Grid, Form, Header, Dimmer, Loader,
 } from 'semantic-ui-react';
 import { withRouter, Redirect } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Field, reduxForm } from 'redux-form';
 
 import { AuthWrapper, LoginBar } from './components';
 import {
-  FormField, Alert, StoryButton, StoryLogin, StorySocket, useStateValue,
+  FormField, Alert, StoryButton, StoryLogin, StorySocket, useStateValue, LanguageFooter,
 } from '../global';
 
 const COLOR_ERROR = 'crimson';
@@ -21,6 +22,7 @@ function sleep(ms) {
 const Register = ({ handleSubmit }) => {
   const [{ user }, dispatch] = useStateValue();
   const [formLoading, setFormLoading] = useState(false);
+  const [t] = useTranslation();
 
   const handleRegisterSubmit = async (e) => {
     try {
@@ -35,12 +37,12 @@ const Register = ({ handleSubmit }) => {
         || !e.passwordVerif
         || !e.passwordVerif.length
       ) {
-        Alert({ title: 'Error, register parameters are missing', timer: 4000, color: COLOR_ERROR });
-        return;
+        Alert({ title: t('login.noLogin'), timer: 4000, color: COLOR_ERROR });
+        throw new Error('error');
       }
       if (e.password !== e.passwordVerif) {
-        Alert({ title: "Error, password don't match", timer: 4000, color: COLOR_ERROR });
-        return;
+        Alert({ title: t('register.noMatch'), timer: 4000, color: COLOR_ERROR });
+        throw new Error('error');
       }
 
       // Create the account on the server
@@ -65,14 +67,14 @@ const Register = ({ handleSubmit }) => {
       });
 
       Alert({
-        title: 'You logged in !',
+        title: t('global.loginMsg'),
         timer: 4000,
         color: COLOR_SUCCESS,
       });
 
       setFormLoading(false);
     } catch (error) {
-      console.error(error.message);
+      // console.error(error.message);
       setFormLoading(false);
     }
   };
@@ -80,7 +82,7 @@ const Register = ({ handleSubmit }) => {
   return (
     <React.Fragment>
       { user.loggedIn && <Redirect to="/" /> }
-      <LoginBar />
+      <LoginBar t={t} />
       <Grid centered style={{ marginTop: '20px' }} columns={2}>
         <Grid.Row centered>
           <Grid.Column computer={8} mobile={14} tablet={10}>
@@ -89,26 +91,27 @@ const Register = ({ handleSubmit }) => {
                 <Loader inverted content="Processing..." />
               </Dimmer>
               <Header style={{ marginTop: '25px' }} textAlign="center" as="h3">
-                Register to Story Factory
+                {t('register.header')}
               </Header>
               <Form style={{ padding: '25px' }} onSubmit={handleSubmit(handleRegisterSubmit)}>
-                <Field label="Username" name="username" component={FormField} type="text" />
-                <Field label="Email Address" name="email" component={FormField} type="text" />
-                <Field label="Password" name="password" component={FormField} type="password" />
+                <Field label={t('register.registerUsername')} name="username" component={FormField} type="text" />
+                <Field label={t('login.loginEmail')} name="email" component={FormField} type="text" />
+                <Field label={t('login.loginPsw')} name="password" component={FormField} type="password" />
                 <Field
-                  label="Confirm password"
+                  label={t('register.registerConfirmPsw')}
                   name="passwordVerif"
                   component={FormField}
                   type="password"
                 />
                 <StoryButton style={{ marginTop: '20px' }} primary fluid type="submit">
-                  Let me enter, quick !
+                  {t('register.registerButton')}
                 </StoryButton>
               </Form>
             </AuthWrapper>
           </Grid.Column>
         </Grid.Row>
       </Grid>
+      <LanguageFooter />
     </React.Fragment>
   );
 };

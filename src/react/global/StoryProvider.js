@@ -4,11 +4,14 @@ import PropTypes from 'prop-types';
 
 const cookieInstance = new Cookies();
 
+let cookieValLang = cookieInstance.get('storyFactoryLang');
+if (cookieValLang === 'en') cookieValLang = 'us';
+
 const initialState = {
   user: {
     loggedIn: false,
   },
-  lang: cookieInstance.get('storyFactoryLang') || 'fr',
+  lang: cookieValLang || 'fr',
   // story: {
   //   users: [],
   // },

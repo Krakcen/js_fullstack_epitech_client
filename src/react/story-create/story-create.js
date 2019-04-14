@@ -2,15 +2,21 @@
 
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import {
-  Grid, Header, Container, Menu, Button, Icon, Form,
-} from 'semantic-ui-react';
-import { Link, withRouter } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { Grid, Header, Form } from 'semantic-ui-react';
+import { withRouter } from 'react-router-dom';
 import { Field, reduxForm } from 'redux-form';
 import FadeIn from 'react-fade-in';
 
 import {
-  Constants, StorySocket, useStateValue, NavBar, StoryButton, Alert,
+  Constants,
+  StorySocket,
+  useStateValue,
+  NavBar,
+  StoryButton,
+  Alert,
+  LanguageFooter,
+  historyReactRouter,
 } from '../global';
 import { FormFieldInput, FormFieldTextArea } from './components';
 
@@ -41,6 +47,7 @@ const LoadingScreen = () => (
 
 const StoryCreate = ({ handleSubmit, history }) => {
   const [storySubmitLoading, setStorySubmitLoading] = useState(false);
+  const [t] = useTranslation();
   const [{ user }] = useStateValue();
 
   const handleLoginSubmit = async (e) => {
@@ -54,33 +61,45 @@ const StoryCreate = ({ handleSubmit, history }) => {
         || !e.nombreOfBlockDefault
         || !e.nombreOfBlockDefault.length
       ) {
-        Alert({ title: 'Vérifiez que tous les champs soit remplis !', timer: 4000, color: COLOR_ERROR });
+        Alert({
+          title: t('storyCreate.empty'),
+          timer: 4000,
+          color: COLOR_ERROR,
+        });
         setStorySubmitLoading(false);
         return;
       }
 
-      StorySocket.emit('create', 'story', {
-        author: user._id,
-        title: e.title,
-        synopsis: e.synopsis,
-        nombreOfBlockDefault: e.nombreOfBlockDefault,
-      }, (error, story) => {
-        if (error) {
-          console.log(error);
-          throw new Error(error);
-        }
-        console.log('Story Created', story);
-        Alert({
-          title: 'Votre histoire est créée !',
-          timer: 4000,
-          color: COLOR_SUCCESS,
-        });
-        setStorySubmitLoading(false);
-        history.push(`/awesome-story/${story._id}`);
-      });
+      StorySocket.emit(
+        'create',
+        'story',
+        {
+          author: user._id,
+          title: e.title,
+          synopsis: e.synopsis,
+          nombreOfBlockDefault: e.nombreOfBlockDefault,
+        },
+        (error, story) => {
+          if (error) {
+            // console.log(error);
+            throw new Error(error);
+          }
+          Alert({
+            title: t('storyCreate.created'),
+            timer: 4000,
+            color: COLOR_SUCCESS,
+          });
+          setStorySubmitLoading(false);
+          history.push(`/awesome-story/${story._id}`);
+        },
+      );
     } catch (error) {
-      console.error(error);
-      Alert({ title: error.message, timer: 4000, color: COLOR_ERROR });
+      // console.error(error);
+      Alert({
+        title: /* error.message */ t('global.errorOccured'),
+        timer: 4000,
+        color: COLOR_ERROR,
+      });
       setStorySubmitLoading(false);
     }
   };
@@ -94,12 +113,12 @@ const StoryCreate = ({ handleSubmit, history }) => {
         minHeight: '100vh',
       }}
     >
-      <NavBar backTo="/stories" backText="Retour" createStory={false} />
+      <NavBar backTo="/stories" backText={t('global.goBackButton')} createStory={false} />
       <FadeIn delay={0}>
         {storySubmitLoading ? (
           <LoadingScreen />
         ) : (
-          <Grid centered>
+          <Grid style={{ paddingBottom: '50px' }} centered>
             <Grid.Row>
               <Grid.Column>
                 <Header
@@ -111,7 +130,7 @@ const StoryCreate = ({ handleSubmit, history }) => {
                   }}
                   as="h1"
                 >
-                  {'Créer une histoire'}
+                  {t('storyCreate.header')}
                 </Header>
               </Grid.Column>
             </Grid.Row>
@@ -121,27 +140,27 @@ const StoryCreate = ({ handleSubmit, history }) => {
                   <Form.Group widths="equal">
                     <Field
                       style={{ paddingRight: '30px' }}
-                      label="Titre"
+                      label={t('storyCreate.title')}
                       name="title"
                       component={FormFieldInput}
                       type="text"
                     />
                     <Field
-                      label="Nombre d'éditions"
+                      label={t('storyCreate.editionNb')}
                       name="nombreOfBlockDefault"
                       component={FormFieldInput}
                       type="number"
                     />
                   </Form.Group>
                   <Field
-                    label="Synopsis"
+                    label={t('storyCreate.synopsis')}
                     name="synopsis"
                     component={FormFieldTextArea}
                     type="text"
                   />
                   <div style={{ textAlign: 'center' }}>
                     <StoryButton size="big" style={{ marginTop: '20px' }} primary type="submit">
-                      Créer mon histoire !
+                      {t('storyCreate.buttonSubmit')}
                     </StoryButton>
                   </div>
                 </Form>
@@ -150,26 +169,17 @@ const StoryCreate = ({ handleSubmit, history }) => {
           </Grid>
         )}
       </FadeIn>
+      <LanguageFooter />
     </div>
   );
 };
 StoryCreate.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
-  history: PropTypes.shape({
-    action: PropTypes.string,
-    block: PropTypes.func,
-    createHref: PropTypes.func,
-    go: PropTypes.func,
-    goBack: PropTypes.func,
-    goForward: PropTypes.func,
-    length: PropTypes.number,
-    listen: PropTypes.func,
-    // location: PropTypes.func,
-    push: PropTypes.func,
-    replace: PropTypes.func,
-  }).isRequired,
+  history: historyReactRouter.isRequired,
 };
 
-export default withRouter(reduxForm({
-  form: 'story-create',
-})(StoryCreate));
+export default withRouter(
+  reduxForm({
+    form: 'story-create',
+  })(StoryCreate),
+);

@@ -3,13 +3,20 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import {
-  Grid, Header, Container, Menu, Button, Icon,
+  Grid, Header, Container, Menu, Button,
 } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import FadeIn from 'react-fade-in';
 
 import {
-  Constants, StorySocket, useStateValue, NavBar, StoryApp, Alert,
+  Constants,
+  StorySocket,
+  useStateValue,
+  NavBar,
+  StoryApp,
+  Alert,
+  LanguageFooter,
 } from '../global';
 import { StorySingle, StoryLoader, StorySearch } from './components';
 import './stories.css';
@@ -18,12 +25,14 @@ const COLOR_ERROR = 'crimson';
 const COLOR_SUCCESS = '#21ba45';
 
 const Stories = () => {
-  const [menuActive, setMenuActive] = useState('searchStories');
+  const [menuActive, setMenuActive] = useState('myStories');
   const [myStories, setMyStories] = useState([]);
   const [myStoriesLoading, setMyStoriesLoading] = useState(false);
   const [searchStories, setSearchStories] = useState([]);
   const [searchStoriesLoading, setSearchStoriesLoading] = useState(false);
+  const [t] = useTranslation();
   const [timeoutSearch, setTimeoutSearch] = useState(null);
+
   const [{ user }] = useStateValue();
 
   const fetchMyStories = async () => {
@@ -40,10 +49,10 @@ const Stories = () => {
         }
         setMyStories(data.data);
         setMyStoriesLoading(false);
-        console.log(data.data);
+        // console.log(data.data);
       });
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     }
   };
 
@@ -63,7 +72,6 @@ const Stories = () => {
         },
         (error, data) => {
           if (!data || !data.data || !data.data.length) {
-            console.log('nope');
             setSearchStories([]);
             setSearchStoriesLoading(false);
             return;
@@ -75,7 +83,7 @@ const Stories = () => {
         },
       );
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     }
   };
 
@@ -93,7 +101,7 @@ const Stories = () => {
         color: COLOR_SUCCESS,
       });
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       Alert({
         title: error.message,
         timer: 4000,
@@ -107,6 +115,10 @@ const Stories = () => {
     if (!query || !query.length) query = '';
 
     setSearchStoriesLoading(true);
+
+    if (timeoutSearch !== null) {
+      setSearchStoriesLoading(false);
+    }
 
     setTimeoutSearch((oldTimeoutSearch) => {
       if (oldTimeoutSearch) clearTimeout(oldTimeoutSearch);
@@ -129,8 +141,6 @@ const Stories = () => {
     setMenuActive(name);
   };
 
-  console.log(searchStories);
-
   return (
     <div
       style={{
@@ -139,14 +149,14 @@ const Stories = () => {
         minHeight: '100vh',
       }}
     >
-      <NavBar createStory backTo="/" backText="Retour" />
+      <NavBar createStory backTo="/" backText={t('global.goBackButton')} />
       {user.loggedIn ? (
         <React.Fragment>
           <Grid>
             <Grid.Row>
               <Grid.Column>
                 <Header as="h1" style={{ color: 'white', fontSize: '3rem' }} textAlign="center">
-                  Parcourir les histoires
+                  {t('stories.mainHeader')}
                 </Header>
               </Grid.Column>
             </Grid.Row>
@@ -158,12 +168,16 @@ const Stories = () => {
                       name="myStories"
                       active={menuActive === 'myStories'}
                       onClick={handleMenuActive}
-                    />
+                    >
+                      {t('stories.tabMyStories')}
+                    </Menu.Item>
                     <Menu.Item
                       name="searchStories"
                       active={menuActive === 'searchStories'}
                       onClick={handleMenuActive}
-                    />
+                    >
+                      {t('stories.tabSearchStories')}
+                    </Menu.Item>
                   </Menu>
                 </Container>
               </Grid.Column>
@@ -208,7 +222,7 @@ const Stories = () => {
                     onChange={handleSearchChange}
                     size="big"
                     fluid
-                    placeholder="Rechercher par nom ou synopsis"
+                    placeholder={t('stories.searchPlacholder')}
                   />
                 </Grid.Column>
               </Grid.Row>
@@ -234,7 +248,7 @@ const Stories = () => {
                     <Grid.Column>
                       <Container>
                         <Header style={{ color: 'white' }} textAlign="center">
-                          {"Pas encore d'histoire écrite"}
+                          {t('stories.noStoryWritten')}
                         </Header>
                       </Container>
                     </Grid.Column>
@@ -246,11 +260,11 @@ const Stories = () => {
         </React.Fragment>
       ) : (
         <FadeIn delay={0}>
-          <Grid>
+          <Grid style={{ paddingBottom: '50px' }}>
             <Grid.Row>
               <Grid.Column>
                 <Header as="h1" style={{ color: 'white', fontSize: '3rem' }} textAlign="center">
-                  {'Vous devez vous connecter pour accéder aux histoires'}
+                  {t('stories.noLoginMessage')}
                 </Header>
               </Grid.Column>
             </Grid.Row>
@@ -262,12 +276,12 @@ const Stories = () => {
                     style={{ borderRadius: '25px', marginRight: '15px' }}
                     inverted
                   >
-                    Me connecter
+                    {t('landing.menuLogin')}
                   </Button>
                 </Link>
                 <Link to="/register">
                   <Button size="massive" style={{ borderRadius: '25px' }} inverted>
-                    {"M'inscrire"}
+                    {t('landing.menuRegister')}
                   </Button>
                 </Link>
               </Grid.Column>
@@ -275,6 +289,7 @@ const Stories = () => {
           </Grid>
         </FadeIn>
       )}
+      <LanguageFooter />
     </div>
   );
 };

@@ -1,9 +1,10 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Grid, Icon } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import { StoryButton } from '../../global';
 
-const LoginBar = () => (
+const LoginBar = ({ t }) => (
   <React.Fragment>
     <Grid style={{ marginTop: '35px' }} container>
       <Grid.Row>
@@ -11,7 +12,7 @@ const LoginBar = () => (
           <Link to="/">
             <StoryButton icon labelPosition="left" secondary>
               <Icon name="arrow left" />
-              Retour accueil
+              {t('global.goBackButton')}
             </StoryButton>
           </Link>
         </Grid.Column>
@@ -19,5 +20,8 @@ const LoginBar = () => (
     </Grid>
   </React.Fragment>
 );
+LoginBar.propTypes = {
+  t: PropTypes.func.isRequired,
+};
 
 export default LoginBar;

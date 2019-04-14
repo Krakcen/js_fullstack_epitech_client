@@ -1,3 +1,3 @@
 export { FormFieldInput, FormFieldTextArea } from './FormField';
 
-export const eslint = 'ELSINT';
+export const linterType = 'airbnb';

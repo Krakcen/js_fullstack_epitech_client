@@ -10,16 +10,16 @@ const AuthButtons = ({ t, fixed }) => {
 
   const logoutUser = async () => {
     try {
-      const logout = await StoryLogout();
+      await StoryLogout();
 
-      console.log(logout);
+      // console.log(logout);
 
       dispatch({
         type: 'SET_USER',
         payload: { loggedIn: false },
       });
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 
@@ -27,7 +27,7 @@ const AuthButtons = ({ t, fixed }) => {
     <React.Fragment>
       {user.loggedIn ? (
         <Header as="h3" style={{ color: 'white', fontWeight: 'normal' }}>
-          {`Welcome back ${user.username} !`}
+          {`${t('landing.welcome')} ${user.username} !`}
           {' '}
           <Icon
             onClick={logoutUser}
@@ -38,10 +38,10 @@ const AuthButtons = ({ t, fixed }) => {
       ) : (
         <React.Fragment>
           <Link to="/login">
-            <Button inverted={!fixed}>{t('landing.menuLogin')}</Button>
+            <Button style={{ borderRadius: '20px' }} inverted={!fixed}>{t('landing.menuLogin')}</Button>
           </Link>
           <Link to="/register">
-            <Button inverted={!fixed} primary={fixed} style={{ marginLeft: '0.5em' }}>
+            <Button inverted={!fixed} primary={fixed} style={{ marginLeft: '0.5em', borderRadius: '20px' }}>
               {t('landing.menuRegister')}
             </Button>
           </Link>
